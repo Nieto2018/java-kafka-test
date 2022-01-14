@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class KafkaController {
 
-	@Autowired
-	private KafkaService kafkaService;
+    @Autowired
+    private KafkaService kafkaService;
 
-	@GetMapping
-	public ResponseEntity<String> hello() {
-		return ResponseEntity.ok("Welcome to java-kafka-test");
-	}
+    @GetMapping
+    public ResponseEntity<String> hello() {
+        return ResponseEntity.ok("Welcome to java-kafka-test");
+    }
 
-	@PostMapping
-	public ResponseEntity<String> sendMessage(@RequestBody String message) {
-		kafkaService.sendMessage(message);
-		return ResponseEntity.ok("Ejecutado");
-	}
+    @PostMapping
+    public ResponseEntity<String> sendMessage(@RequestBody String message) {
+        kafkaService.sendMessage(message);
+        return ResponseEntity.ok("Ejecutado");
+    }
 
 }
