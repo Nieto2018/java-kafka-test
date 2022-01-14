@@ -4,3 +4,5 @@ server:
 kafka:
   topic: java-kafka-test-topic
   bootstrapAddress: kafka1:9093
+  consumer:
+    groupId: 1
