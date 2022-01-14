@@ -14,11 +14,10 @@ Insert in the file '/etc/hosts' the following hostname kafka1 kafka2 kafka3 kafk
 ## To test the application
 
 ### Publish a message
-'''
+
 curl --location --request POST 'http://localhost:8090/api/' \
---header 'Content-Type: application/json' \
---data-raw 'mensaje-test'
-'''
+    --header 'Content-Type: application/json' \
+    --data-raw 'mensaje-test'
 
 ## Kafka commands:
 
