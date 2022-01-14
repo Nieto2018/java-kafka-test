@@ -11,32 +11,28 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 @Service
 public class KafkaService {
 
-	@Autowired
-	private KafkaTemplate<String, String> kafkaTemplate;
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
 
-	@Value(value = "${kafka.topic}")
-	private String topic;
+    @Value(value = "${kafka.topic}")
+    private String topic;
 
-	public void sendMessage(String msg) {
-		ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(topic, msg);
+    public void sendMessage(String message) {
+        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(topic, message);
 
-		ListenableFutureCallback<? super SendResult<String, String>> listenable = new ListenableFutureCallback<SendResult<String, String>>() {
+        future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
 
-			@Override
-			public void onSuccess(SendResult<String, String> result) {
-				System.out.println("Sent message with offset=[" + result.getRecordMetadata().offset() + "]");
-//	            System.out.println("Sent message=[" + message + "] with offset=[" + result.getRecordMetadata().offset() + "]");
-			}
+            @Override
+            public void onSuccess(SendResult<String, String> result) {
+                System.out.println("Sent message=[" + message + "] with offset=[" + result.getRecordMetadata().offset() + "]");
+            }
 
-			@Override
-			public void onFailure(Throwable ex) {
-				System.out.println("Unable to send message due to : " + ex.getMessage());
-//	            System.out.println("Unable to send message=["+ message + "] due to : " + ex.getMessage());
-			}
-		};
+            @Override
+            public void onFailure(Throwable ex) {
+                System.out.println("Unable to send message=[" + message + "] due to : " + ex.getMessage());
+            }
+        });
 
-		future.addCallback(listenable);
-
-	}
+    }
 
 }

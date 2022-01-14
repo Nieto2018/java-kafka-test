@@ -1,0 +1,66 @@
+# Instrucciones para el correcto funcionamiento del cluster es necesario:
+# 1) Añadir kafka1, kafka2, kafka3 al archivos /etc/hosts (Ej: 127.0.0.1       localhost ... kafka1 kafka2 kafka3)
+# 2) Crear/modificar la ruta /app/kafka
+# 3) Levantar el cluster con el comando "docker-compose up"
+# 4) Si en el paso anterior te muestra en el log "mkdir: cannot create directory '/bitnami/kafka': Permission denied" dar todos los permisos a todos los directorios creado dentro de /app/kafka, ya que seguramente abrá fallado al levantar el cluster por este motivo (sudo chmod -R 777 /app/kafka)
+# 5) Levantar el cluster con el comando "docker-compose up"
+# 6) Si falla al levantar el cluster prueba de nuevo, porque puede ser debido a que se ha intentado levantar los contenedores brokers antes que el de zookeeper
+
+version: "3"
+
+services:
+
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    ports:
+      - '2181:2181'
+    volumes:
+      - /app/kafka/zookeeper:/bitnami
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka1:
+    image: 'bitnami/kafka:latest'
+    ports:
+      - '9093:9093'
+    volumes:
+      - /app/kafka/kafka/1:/bitnami
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka1:9093
+    depends_on:
+      - zookeeper
+
+
+  kafka2:
+    image: 'bitnami/kafka:latest'
+    ports:
+      - '9094:9094'
+    volumes:
+      - /app/kafka/kafka/2:/bitnami
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_BROKER_ID=2
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka2:9094
+    depends_on:
+      - zookeeper
+
+  kafka3:
+    image: 'bitnami/kafka:latest'
+    ports:
+      - '9095:9095'
+    volumes:
+      - /app/kafka/kafka/3:/bitnami
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_BROKER_ID=3
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9095
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka3:9095
+    depends_on:
+      - zookeeper
